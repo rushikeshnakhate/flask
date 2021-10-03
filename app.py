@@ -1,5 +1,3 @@
-from flask import Flask
-
 import json
 import sys
 import time
@@ -27,6 +25,7 @@ from sklearn import datasets, mixture
 import sklearn.cluster as cluster
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
+import requests
 from flask import Flask, request
 import pandas as pd
 
@@ -39,7 +38,7 @@ def classify(data):
 
     ActData = []
     TestData = []
-
+    Data = Data[:-1]
     random.shuffle(Data)
     num = int(float(first[2]) * len(Data))
     xmax = 0
@@ -84,22 +83,21 @@ def classify(data):
     first.pop(2)
 
     if first[1] == "0":
-        clf = KNeighborsClassifier(n_neighbors=int(first[2]), leaf_size=int(first[3]), p=int(first[4]),
-                                   weights=first[5])
+        clf = KNeighborsClassifier(n_neighbors=int(first[2]), leaf_size=int(first[3]), p=int(first[4]),weights= first[5])
         clf.fit(X, Y)
         x += str(clf.score(XX, YY))
         x += "dd"
         for i in range(int(ymin - 1), int(ymax + 1)):
             for j in range(int(xmin - 1), int(xmax + 1)):
-                x += str(j) + "," + str(i) + "," + str(clf.predict([[j, i]]))[1:-1] + " "
+                x += str(j)+","+str(i)+","+str(clf.predict([[j, i]]))[1:-1] + " "
     elif first[1] == "1":
-        clf = SVC(C=float(first[2]), kernel=first[3], degree=int(first[4]), coef0=float(first[5]))
+        clf = SVC(C=float(first[2]),kernel= first[3], degree=int(first[4]),coef0= float(first[5]))
         clf.fit(X, Y)
         x += str(clf.score(XX, YY))
         x += "dd"
         for i in range(int(ymin - 1), int(ymax + 1)):
             for j in range(int(xmin - 1), int(xmax + 1)):
-                x += str(j) + "," + str(i) + "," + str(clf.predict([[j, i]]))[1:-1] + " "
+                x += str(j)+","+str(i)+","+str(clf.predict([[j, i]]))[1:-1] + " "
 
     elif first[1] == "2":
         hidden = [int(j) for j in first[3:]]
@@ -110,7 +108,7 @@ def classify(data):
         x += "dd"
         for i in range(int(ymin - 1), int(ymax + 1)):
             for j in range(int(xmin - 1), int(xmax + 1)):
-                x += str(j) + "," + str(i) + "," + str(clf.predict([[j, i]]))[1:-1] + " "
+                x += str(j)+","+str(i)+","+str(clf.predict([[j, i]]))[1:-1] + " "
 
     return x
 
@@ -125,7 +123,7 @@ def Cluster(data):
     ActData = []
 
     for j in Data:
-        if len(str(j).split(",")) == 2:
+        if len(str(j).split(",")) ==2:
             lst = [float(k) for k in str(j).split(",")]
         ActData.append(lst)
 
@@ -139,12 +137,11 @@ def Cluster(data):
         result = kMeans.fit(X)
         x += str(result.labels_)
     elif first[1] == "1":
-        kMeans = cluster.Birch(n_clusters=int(float(first[2])), threshold=float(first[3]),
-                               branching_factor=int(float(first[4])))
+        kMeans = cluster.Birch(n_clusters=int(float(first[2])), threshold=float(first[3]), branching_factor=int(float(first[4])))
         result = kMeans.fit(X)
         x += str(result.labels_)
     elif first[1] == "2":
-        kMeans = cluster.AgglomerativeClustering(n_clusters=int(float(first[2])), linkage=first[3], affinity=first[4])
+        kMeans = cluster.AgglomerativeClustering(n_clusters=int(float(first[2])),linkage=first[3],affinity=first[4])
         result = kMeans.fit(X)
         x += str(result.labels_)
     return x
@@ -161,7 +158,7 @@ def regress(data):
 
     xmax = 0
     xmin = 0
-
+    Data = Data[:-1]
     random.shuffle(Data)
 
     for j in Data:
@@ -187,7 +184,7 @@ def regress(data):
             lst.append(j)
         tdf = pd.DataFrame(lst, columns=["x"])
         for j in range(len(clf.predict(tdf))):
-            x += str(lst[j]) + "," + str(clf.predict(tdf)[j]) + " "
+            x += str(lst[j])+","+str(clf.predict(tdf)[j])+" "
         x += " "
 
 
@@ -203,14 +200,14 @@ def regress(data):
 
         tdf = pd.DataFrame(lst, columns=["x"])
         for j in range(len(clf.predict(tdf))):
-            x += str(lst[j]) + "," + str(clf.predict(tdf)[j]) + " "
+            x += str(lst[j])+","+str(clf.predict(tdf)[j])+" "
         x += "\\n"
     return x
 
 
 x = "bazinga"
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 
 @app.route('/')
@@ -221,6 +218,7 @@ def hello():
 
 @app.route('/', methods=['POST'])
 def example():
+
     global x
     x = str(request.data)[2:len(str(request.data)) - 1]
     if x[0] == "0":
@@ -233,5 +231,5 @@ def example():
     return x
 
 
-if __name__ == '__main__':
-    app.run()
+if _name_ == '_main_':
+    app.run(host="127.0.0.1", port=9002)
