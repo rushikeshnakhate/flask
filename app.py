@@ -1,33 +1,13 @@
-import json
-import sys
-import time
-import warnings
-
-import sklearn
-from sklearn import mixture
-from sklearn.model_selection import train_test_split
 import random
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_moons, make_circles, make_classification
-import sklearn.neighbors
-from sklearn.neural_network import MLPClassifier, MLPRegressor
+
+import pandas as pd
+import sklearn.cluster as cluster
+from flask import Flask, request
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import kneighbors_graph
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.svm import SVC
 from sklearn.svm import SVR
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-
-from sklearn import datasets, mixture
-import sklearn.cluster as cluster
-from sklearn.neighbors import kneighbors_graph
-from sklearn.preprocessing import StandardScaler
-import requests
-from flask import Flask, request
-import pandas as pd
 
 
 def classify(data):
