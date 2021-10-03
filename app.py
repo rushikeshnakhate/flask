@@ -232,5 +232,5 @@ def example():
     return x
 
 
-if _name_ == '__main__':
+if __name__ == '__main__':
     app.run()
