@@ -209,7 +209,7 @@ def regress(data):
 
 x = "bazinga"
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -232,5 +232,5 @@ def example():
     return x
 
 
-if _name_ == '_main_':
+if _name_ == '__main__':
     app.run()
